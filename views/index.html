@@ -72,29 +72,9 @@
 <!-- <script src="js/cosmicjs.browser.min.js"></script> -->
 
 <script>
-  function getParameterByName(name, url) {
-    if (!url) {
-      url = window.location.href;
-    }
-    name = name.replace(/[[\]]/g, "\\$&");
-    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
-    if (!results)
-      return null;
-    if (!results[2])
-      return '';
-    return decodeURIComponent(results[2].replace(/\+/g, " "));
-  }
-  var config = {
-    slug: getParameterByName('bucket_slug'),
-    read_key: getParameterByName('read_key'),
-    write_key: getParameterByName('write_key')
-  };
-
-  $.get("https://api.cosmicjs.com/v1/" + config.slug + '/object/google-analytics-user-id', function (data, status) {
-    gapi.analytics.ready(function () {
-      var CLIENT_ID = data.object.metadata.user_id;
-      if (!!CLIENT_ID) {
+  gapi.analytics.ready(function () {
+      var CLIENT_ID = "915218045307-pk93tn8rpu0fnciocqnbd4rv1qstkuf7.apps.googleusercontent.com";
+      // if (!!CLIENT_ID) {
         gapi.analytics.auth.authorize({
           container: 'auth-button',
           clientid: CLIENT_ID,
@@ -222,15 +202,14 @@
             query: data
           }).execute();
         });
-      } else {
-        console.log("empty");
-        var html = '<div class="alert alert-danger alert-dismissible">' +
-          '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-          'Please Add Client ID in "google-analytics-user-id" object in your bucket!</div>';
-        $('#error').html(html);
-      }
+      // } else {
+      //   console.log("empty");
+      //   var html = '<div class="alert alert-danger alert-dismissible">' +
+      //     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+      //     'Please Add Client ID in "google-analytics-user-id" object in your bucket!</div>';
+      //   $('#error').html(html);
+      // }
     });
-  });
 </script>
 
 </html>
