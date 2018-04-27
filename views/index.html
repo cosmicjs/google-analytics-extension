@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Google Analytics Dashboard</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css" rel="stylesheet"
+    type="text/css">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="col-md-9 mx-auto">
+      <h1>Google Analytics Dashboard</h1>
+      <div class="row ml-2" id="auth-button"></div>
+      <div id="error"></div>
+      <div id="view-selector" style="display: none;" class="row mt-3 ml-2"></div>
+    </div>
+    <div id="section1" class="col-md-8 mx-auto" style="display: none;">
+      <div class="row m-5 mx-auto border ">
+        <h4 class="col-md-12 text-info ml-5">Sessions</h4>
+        <div class="col-md-8 mx-auto" id="data-chart-sessions-container">
+        </div>
+        <div class="mx-auto mb-2 col-md-8" id="date-range-sessions-container">
+        </div>
+      </div>
+      <div class="row m-5 mx-auto border ">
+        <h4 class="col-md-12 text-info ml-5">Users</h4>
+        <div class="col-md-8 mx-auto" id="data-chart-users-container">
+        </div>
+        <div class="mx-auto mb-2 col-md-8" id="date-range-users-container">
+        </div>
+      </div>
+    </div>
+
+    <div id="section2" style="display: none;" class="border m-5 col-md-9 mx-auto">
+      <h4 class="m-3 col-md-10 text-info">Page Views</h4>
+      <div class="col-md-12" id="date-range-page-views-container">
+      </div>
+      <div class="col-md-12" id="data-chart-page-views-container">
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  (function (w, d, s, g, js, fjs) {
+    g = w.gapi || (w.gapi = {});
+    g.analytics = {
+      q: [],
+      ready: function (cb) {
+        this.q.push(cb)
+      }
+    };
+    js = d.createElement(s);
+    fjs = d.getElementsByTagName(s)[0];
+    js.src = 'https://apis.google.com/js/platform.js';
+    fjs.parentNode.insertBefore(js, fjs);
+    js.onload = function () {
+      g.load('analytics')
+    };
+  }(window, document, 'script'));
+</script>
+<script src="js/dateRangeSelector.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+  crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm"
+  crossorigin="anonymous"></script>
+<!-- <script src="js/cosmicjs.browser.min.js"></script> -->
+
+<script>
+  function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+    if (!results)
+      return null;
+    if (!results[2])
+      return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+  var config = {
+    slug: getParameterByName('bucket_slug'),
+    read_key: getParameterByName('read_key'),
+    write_key: getParameterByName('write_key')
+  };
+
+  $.get("https://api.cosmicjs.com/v1/" + config.slug + '/object/google-analytics-user-id', function (data, status) {
+    gapi.analytics.ready(function () {
+      var CLIENT_ID = data.object.metadata.user_id;
+      if (!!CLIENT_ID) {
+        gapi.analytics.auth.authorize({
+          container: 'auth-button',
+          clientid: CLIENT_ID,
+        });
+
+        var dateRange1 = {
+          'start-date': '30daysAgo',
+          'end-date': 'today'
+        };
+        var dateRange2 = {
+          'start-date': '30daysAgo',
+          'end-date': 'today'
+        };
+        var dateRange3 = {
+          'start-date': '30daysAgo',
+          'end-date': 'today'
+        };
+
+        var viewSelector = new gapi.analytics.ViewSelector({
+          container: 'view-selector'
+        });
+
+        var sessionsSelector = new gapi.analytics.ext.DateRangeSelector({
+            container: 'date-range-sessions-container'
+          })
+          .set(dateRange1)
+          .execute();
+
+        var usersSelector = new gapi.analytics.ext.DateRangeSelector({
+            container: 'date-range-users-container'
+          })
+          .set(dateRange2)
+          .execute();
+
+        var pageViewsSelector = new gapi.analytics.ext.DateRangeSelector({
+            container: 'date-range-page-views-container'
+          })
+          .set(dateRange3)
+          .execute();
+
+        var sessions = new gapi.analytics.googleCharts.DataChart({
+          reportType: 'ga',
+          query: {
+            'dimensions': 'ga:date',
+            'metrics': 'ga:sessions',
+            'start-date': dateRange1['start-date'],
+            'end-date': dateRange1['end-date']
+          },
+          chart: {
+            type: 'LINE',
+            container: 'data-chart-sessions-container'
+          }
+        });
+
+        var pageViews = new gapi.analytics.googleCharts.DataChart({
+          reportType: 'ga',
+          query: {
+            'dimensions': 'ga:pagePath,ga:pageTitle',
+            'metrics': 'ga:pageviews,ga:exitRate,ga:avgTimeOnPage',
+            'start-date': dateRange3['start-date'],
+            'end-date': dateRange3['end-date']
+          },
+          chart: {
+            type: 'TABLE',
+            container: 'data-chart-page-views-container'
+          }
+        });
+
+        var users = new gapi.analytics.googleCharts.DataChart({
+          reportType: 'ga',
+          query: {
+            'dimensions': 'ga:country',
+            'metrics': 'ga:users',
+            'start-date': dateRange2['start-date'],
+            'end-date': dateRange2['end-date']
+          },
+          chart: {
+            type: 'GEO',
+            container: 'data-chart-users-container',
+            options: {
+              displayMode: 'auto',
+              colorAxis: {
+                colors: ['green', 'blue']
+              },
+              magnifyingGlass: {
+                enable: true,
+                zoomFactor: 7.5
+              }
+            }
+          }
+        });
+
+        gapi.analytics.auth.on('success', function (response) {
+          console.log(response);
+          viewSelector.execute();
+          $('#view-selector').show();
+        });
+
+        viewSelector.on('change', function (ids) {
+          var newIds = {
+            query: {
+              ids: ids
+            }
+          }
+          $('#section1').show();
+          $('#section2').show();
+          sessions.set(newIds).execute();
+          pageViews.set(newIds).execute();
+          users.set(newIds).execute();
+        });
+
+        sessionsSelector.on('change', function (data) {
+          console.log(data)
+          sessions.set({
+            query: data
+          }).execute();
+        });
+        pageViewsSelector.on('change', function (data) {
+          pageViews.set({
+            query: data
+          }).execute();
+        });
+        usersSelector.on('change', function (data) {
+          users.set({
+            query: data
+          }).execute();
+        });
+      } else {
+        console.log("empty");
+        var html = '<div class="alert alert-danger alert-dismissible">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+          'Please Add Client ID in "google-analytics-user-id" object in your bucket!</div>';
+        $('#error').html(html);
+      }
+    });
+  });
+</script>
+
+</html>

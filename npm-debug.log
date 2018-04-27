@@ -1,0 +1,30 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Users\\abc\\Documents\\BitBytes\\Projects\\Cosmic\\google-analytics-extension\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'run',
+1 verbose cli   'concat-js;',
+1 verbose cli   'npm',
+1 verbose cli   'run',
+1 verbose cli   'uglifyjs' ]
+2 info using npm@3.10.10
+3 info using node@v8.9.4
+4 warn invalid config loglevel="notice"
+5 verbose stack Error: missing script: concat-js;
+5 verbose stack     at run (C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\lib\run-script.js:151:19)
+5 verbose stack     at C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\lib\run-script.js:61:5
+5 verbose stack     at C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\node_modules\read-package-json\read-json.js:356:5
+5 verbose stack     at checkBinReferences_ (C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\node_modules\read-package-json\read-json.js:320:45)
+5 verbose stack     at final (C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\node_modules\read-package-json\read-json.js:354:3)
+5 verbose stack     at then (C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\node_modules\read-package-json\read-json.js:124:5)
+5 verbose stack     at C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\node_modules\read-package-json\read-json.js:243:12
+5 verbose stack     at C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension\node_modules\npm\node_modules\graceful-fs\graceful-fs.js:78:16
+5 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:511:3)
+6 verbose cwd C:\Users\abc\Documents\BitBytes\Projects\Cosmic\google-analytics-extension
+7 error Windows_NT 10.0.16299
+8 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Users\\abc\\Documents\\BitBytes\\Projects\\Cosmic\\google-analytics-extension\\node_modules\\npm\\bin\\npm-cli.js" "run" "concat-js;" "npm" "run" "uglifyjs"
+9 error node v8.9.4
+10 error npm  v3.10.10
+11 error missing script: concat-js;
+12 error If you need help, you may report this error at:
+12 error     <https://github.com/npm/npm/issues>
+13 verbose exit [ 1, true ]
