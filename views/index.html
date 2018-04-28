@@ -12,13 +12,13 @@
 
 <body>
   <div class="container-fluid">
-    <div class="col-md-9 mx-auto">
+    <div class="col-md-12">
       <h1>Google Analytics Dashboard</h1>
       <div class="row ml-2" id="auth-button"></div>
       <div id="error"></div>
       <div id="view-selector" style="display: none;" class="row mt-3 ml-2"></div>
     </div>
-    <div id="section1" class="col-md-8 mx-auto" style="display: none;">
+    <div id="section1" class="col-md-12" style="display: none;">
       <div class="row m-5 mx-auto border ">
         <h4 class="col-md-12 text-info ml-5">Sessions</h4>
         <div class="col-md-8 mx-auto" id="data-chart-sessions-container">
@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <div id="section2" style="display: none;" class="border m-5 col-md-9 mx-auto">
+    <div id="section2" style="display: none;" class="border col-md-12">
       <h4 class="m-3 col-md-10 text-info">Page Views</h4>
       <div class="col-md-12" id="date-range-page-views-container">
       </div>
@@ -44,6 +44,11 @@
     </div>
   </div>
 </body>
+<style>
+  #view-selector table {
+    width: 250px !important;
+  }
+</style>
 <script>
   (function (w, d, s, g, js, fjs) {
     g = w.gapi || (w.gapi = {});
