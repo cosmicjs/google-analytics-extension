@@ -227,13 +227,17 @@
         gapi.analytics.auth.on('success', function (response) {
           // viewSelector.execute();
           // $('#view-selector').show();
-
           $('#section1').show();
           $('#section2').show();
-          sessions.set('ga:' + VIEW_ID).execute();
-          pageViews.set('ga:' + VIEW_ID).execute();
-          users.set('ga:' + VIEW_ID).execute();
-          usersTable.set('ga:' + VIEW_ID).execute();
+          var newIds = {
+            query: {
+              ids: 'ga:' + VIEW_ID
+            }
+          }
+          sessions.set(newIds).execute();
+          pageViews.set(newIds).execute();
+          users.set(newIds).execute();
+          usersTable.set(newIds).execute();
         });
 
         // viewSelector.on('change', function (ids) {
