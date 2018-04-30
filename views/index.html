@@ -16,7 +16,7 @@
       <h1>Google Analytics Dashboard</h1>
       <div class="row ml-2" id="auth-button"></div>
       <div id="error"></div>
-      <div id="view-selector" style="display: none;" class="row mt-3 ml-2"></div>
+      <!-- <div id="view-selector" style="display: none;" class="row mt-3 ml-2"></div> -->
     </div>
     <div id="section1" class="col-md-12" style="display: none;">
       <div class="row m-5 mx-auto border ">
@@ -32,6 +32,8 @@
         </div>
         <div class="mx-auto mb-2 col-md-8" id="date-range-users-container">
         </div>
+        <div class="col-md-8 mx-auto" id="data-chart-users-table-container">
+        </div>
       </div>
     </div>
 
@@ -45,9 +47,9 @@
   </div>
 </body>
 <style>
-  #view-selector table {
+  /* #view-selector table {
     width: 250px !important;
-  }
+  } */
 </style>
 <script>
   (function (w, d, s, g, js, fjs) {
@@ -77,9 +79,30 @@
 <!-- <script src="js/cosmicjs.browser.min.js"></script> -->
 
 <script>
-  gapi.analytics.ready(function () {
+  function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+    if (!results)
+      return null;
+    if (!results[2])
+      return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+  var config = {
+    slug: getParameterByName('bucket_slug'),
+    read_key: getParameterByName('read_key'),
+    write_key: getParameterByName('write_key')
+  };
+
+  $.get("https://api.cosmicjs.com/v1/" + config.slug + '/object/google-analytics-user-id', function (data, status) {
+    var VIEW_ID = data.object.metadata.view_id;
+    gapi.analytics.ready(function () {
       var CLIENT_ID = "915218045307-pk93tn8rpu0fnciocqnbd4rv1qstkuf7.apps.googleusercontent.com";
-      // if (!!CLIENT_ID) {
+      if (!!VIEW_ID) {
         gapi.analytics.auth.authorize({
           container: 'auth-button',
           clientid: CLIENT_ID,
@@ -98,9 +121,9 @@
           'end-date': 'today'
         };
 
-        var viewSelector = new gapi.analytics.ViewSelector({
-          container: 'view-selector'
-        });
+        // var viewSelector = new gapi.analytics.ViewSelector({
+        //   container: 'view-selector'
+        // });
 
         var sessionsSelector = new gapi.analytics.ext.DateRangeSelector({
             container: 'date-range-sessions-container'
@@ -144,7 +167,36 @@
           },
           chart: {
             type: 'TABLE',
-            container: 'data-chart-page-views-container'
+            container: 'data-chart-page-views-container',
+            options: {
+              page: 'enable',
+              pageSize: '10',
+              pagingButtons: '10',
+              sortAscending: false,
+              sortColumn: 2
+            }
+          }
+        });
+
+        var usersTable = new gapi.analytics.googleCharts.DataChart({
+          reportType: 'ga',
+          query: {
+            'dimensions': 'ga:country',
+            'metrics': 'ga:users',
+            'start-date': dateRange2['start-date'],
+            'end-date': dateRange2['end-date']
+          },
+          chart: {
+            type: 'TABLE',
+            container: 'data-chart-users-table-container',
+            options: {
+              page: 'enable',
+              pageSize: '5',
+              pagingButtons: '10',
+              sortAscending: false,
+              sortColumn: 1,
+              width: '420px'
+            }
           }
         });
 
@@ -173,26 +225,32 @@
         });
 
         gapi.analytics.auth.on('success', function (response) {
-          console.log(response);
-          viewSelector.execute();
-          $('#view-selector').show();
-        });
+          // viewSelector.execute();
+          // $('#view-selector').show();
 
-        viewSelector.on('change', function (ids) {
-          var newIds = {
-            query: {
-              ids: ids
-            }
-          }
           $('#section1').show();
           $('#section2').show();
-          sessions.set(newIds).execute();
-          pageViews.set(newIds).execute();
-          users.set(newIds).execute();
+          sessions.set(VIEW_ID).execute();
+          pageViews.set(VIEW_ID).execute();
+          users.set(VIEW_ID).execute();
+          usersTable.set(VIEW_ID).execute();
         });
 
+        // viewSelector.on('change', function (ids) {
+        //   var newIds = {
+        //     query: {
+        //       ids: ids
+        //     }
+        //   }
+        //   $('#section1').show();
+        //   $('#section2').show();
+        //   sessions.set(newIds).execute();
+        //   pageViews.set(newIds).execute();
+        //   users.set(newIds).execute();
+        //   usersTable.set(newIds).execute();
+        // });
+
         sessionsSelector.on('change', function (data) {
-          console.log(data)
           sessions.set({
             query: data
           }).execute();
@@ -206,15 +264,18 @@
           users.set({
             query: data
           }).execute();
+          usersTable.set({
+            query: data
+          }).execute();
         });
-      // } else {
-      //   console.log("empty");
-      //   var html = '<div class="alert alert-danger alert-dismissible">' +
-      //     '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-      //     'Please Add Client ID in "google-analytics-user-id" object in your bucket!</div>';
-      //   $('#error').html(html);
-      // }
+      } else {
+        var html = '<div class="alert alert-danger alert-dismissible">' +
+          '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+          'Please Add View ID in "google-analytics-view-id" object in your bucket!</div>';
+        $('#error').html(html);
+      }
     });
+  });
 </script>
 
 </html>
