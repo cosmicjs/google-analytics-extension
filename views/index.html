@@ -230,10 +230,10 @@
 
           $('#section1').show();
           $('#section2').show();
-          sessions.set(VIEW_ID).execute();
-          pageViews.set(VIEW_ID).execute();
-          users.set(VIEW_ID).execute();
-          usersTable.set(VIEW_ID).execute();
+          sessions.set('ga:' + VIEW_ID).execute();
+          pageViews.set('ga:' + VIEW_ID).execute();
+          users.set('ga:' + VIEW_ID).execute();
+          usersTable.set('ga:' + VIEW_ID).execute();
         });
 
         // viewSelector.on('change', function (ids) {
