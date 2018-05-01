@@ -1,7 +1,7 @@
 # Google Analytics
 <img width="60%" src="https://cosmic-s3.imgix.net/f37543a0-4d49-11e8-86d8-d7fbaaaa60e5-geo.PNG" />
 
-Add the Google Analytics View ID for your wesite in your [Cosmic JS](https://cosmicjs.com) Bucket.  [Read the blog article](https://cosmicjs.com/blog/building-and-publishing-a-cosmic-js-extension-using-bitbucket-pipelines) to learn how it was built.
+Add the Google Analytics View ID for your wesite in your [Cosmic JS](https://cosmicjs.com) Bucket.  [Read the blog article](https://cosmicjs.com/articles/google-analytics-extension-jgntlka0) to learn how it was built.
 ### Getting Started
 ```
 git clone https://github.com/WaqasArshad777/google-analytics-app.git
@@ -9,7 +9,7 @@ cd google-analytics-app
 npm install
 npm run start
 ```
-http://localhost:3000?bucket_slug=your-bucket-slug&read_key=bucket-read-key&write_key=bucket-write-key.
+http://localhost:5000?bucket_slug=your-bucket-slug&read_key=bucket-read-key&write_key=bucket-write-key.
 
 ### Installing the Extension
 To add this Extension to your Bucket simply install it from Your Bucket > Extensions > Browse Extensions and find this Extension.
