@@ -15,18 +15,25 @@
     <div class="col-md-12">
       <h1>Google Analytics Dashboard</h1>
       <div class="row ml-2" id="auth-button"></div>
-      <div id="error"></div>
+      <div id="view-id-input" style="display: none;">
+        <div class="form-group">
+          <label for="view-id">Enter View ID</label>
+          <input type="text" class="form-control" id="view-id" placeholder="Enter View ID">
+        </div>
+        <button type="button" id="view-id-button" class="btn btn-primary">Submit</button>
+      </div>
+      <div id="error" class="mt-3"></div>
       <!-- <div id="view-selector" style="display: none;" class="row mt-3 ml-2"></div> -->
     </div>
     <div id="section1" class="col-md-12" style="display: none;">
-      <div class="row m-5 mx-auto border ">
+      <div class="row m-5 mx-auto">
         <h4 class="col-md-12 text-info ml-5">Sessions</h4>
         <div class="col-md-8 mx-auto" id="data-chart-sessions-container">
         </div>
         <div class="mx-auto mb-2 col-md-8" id="date-range-sessions-container">
         </div>
       </div>
-      <div class="row m-5 mx-auto border ">
+      <div class="row m-5 mx-auto">
         <h4 class="col-md-12 text-info ml-5">Users</h4>
         <div class="col-md-8 mx-auto" id="data-chart-users-container">
         </div>
@@ -37,7 +44,7 @@
       </div>
     </div>
 
-    <div id="section2" style="display: none;" class="border col-md-12">
+    <div id="section2" style="display: none;" class="col-md-12">
       <h4 class="m-3 col-md-10 text-info">Page Views</h4>
       <div class="col-md-12" id="date-range-page-views-container">
       </div>
@@ -98,137 +105,167 @@
     write_key: getParameterByName('write_key')
   };
 
+  $('#view-id-button').on('click', function () {
+    var id = $('#view-id').val();
+    if (!id) {
+      var html = '<div class="alert alert-danger alert-dismissible">' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+        'View ID cannot be empty' +
+        '</div>';
+      $('#error').html(html);
+      return;
+    }
+    var data = {
+      title: "Google Analytics View ID",
+      slug: "google-analytics-view-id",
+      content: "",
+      metafields: [{
+        key: "view_id",
+        title: "View ID",
+        type: "text",
+        value: id
+      }]
+    }
+    $.ajax({
+      url: 'https://api.cosmicjs.com/v1/' + config.slug + '/edit-object',
+      method: 'put',
+      contentType: 'application/json',
+      data: JSON.stringify(data),
+      success: function (rooms) {
+        location.reload();        
+      }
+    })
+  });
+
   $.get("https://api.cosmicjs.com/v1/" + config.slug + '/object/google-analytics-view-id', function (data, status) {
     var VIEW_ID = data.object.metadata.view_id;
     gapi.analytics.ready(function () {
       var CLIENT_ID = "915218045307-pk93tn8rpu0fnciocqnbd4rv1qstkuf7.apps.googleusercontent.com";
-      if (!!VIEW_ID) {
-        gapi.analytics.auth.authorize({
-          container: 'auth-button',
-          clientid: CLIENT_ID,
-        });
+      gapi.analytics.auth.authorize({
+        container: 'auth-button',
+        clientid: CLIENT_ID,
+      });
 
-        var dateRange1 = {
-          'start-date': '30daysAgo',
-          'end-date': 'today'
-        };
-        var dateRange2 = {
-          'start-date': '30daysAgo',
-          'end-date': 'today'
-        };
-        var dateRange3 = {
-          'start-date': '30daysAgo',
-          'end-date': 'today'
-        };
+      var dateRange1 = {
+        'start-date': '30daysAgo',
+        'end-date': 'today'
+      };
+      var dateRange2 = {
+        'start-date': '30daysAgo',
+        'end-date': 'today'
+      };
+      var dateRange3 = {
+        'start-date': '30daysAgo',
+        'end-date': 'today'
+      };
 
-        // var viewSelector = new gapi.analytics.ViewSelector({
-        //   container: 'view-selector'
-        // });
+      // var viewSelector = new gapi.analytics.ViewSelector({
+      //   container: 'view-selector'
+      // });
 
-        var sessionsSelector = new gapi.analytics.ext.DateRangeSelector({
-            container: 'date-range-sessions-container'
-          })
-          .set(dateRange1)
-          .execute();
+      var sessionsSelector = new gapi.analytics.ext.DateRangeSelector({
+          container: 'date-range-sessions-container'
+        })
+        .set(dateRange1)
+        .execute();
 
-        var usersSelector = new gapi.analytics.ext.DateRangeSelector({
-            container: 'date-range-users-container'
-          })
-          .set(dateRange2)
-          .execute();
+      var usersSelector = new gapi.analytics.ext.DateRangeSelector({
+          container: 'date-range-users-container'
+        })
+        .set(dateRange2)
+        .execute();
 
-        var pageViewsSelector = new gapi.analytics.ext.DateRangeSelector({
-            container: 'date-range-page-views-container'
-          })
-          .set(dateRange3)
-          .execute();
+      var pageViewsSelector = new gapi.analytics.ext.DateRangeSelector({
+          container: 'date-range-page-views-container'
+        })
+        .set(dateRange3)
+        .execute();
 
-        var sessions = new gapi.analytics.googleCharts.DataChart({
-          reportType: 'ga',
-          query: {
-            'dimensions': 'ga:date',
-            'metrics': 'ga:sessions',
-            'start-date': dateRange1['start-date'],
-            'end-date': dateRange1['end-date']
-          },
-          chart: {
-            type: 'LINE',
-            container: 'data-chart-sessions-container'
+      var sessions = new gapi.analytics.googleCharts.DataChart({
+        reportType: 'ga',
+        query: {
+          'dimensions': 'ga:date',
+          'metrics': 'ga:sessions',
+          'start-date': dateRange1['start-date'],
+          'end-date': dateRange1['end-date']
+        },
+        chart: {
+          type: 'LINE',
+          container: 'data-chart-sessions-container'
+        }
+      });
+
+      var pageViews = new gapi.analytics.googleCharts.DataChart({
+        reportType: 'ga',
+        query: {
+          'dimensions': 'ga:pagePath,ga:pageTitle',
+          'metrics': 'ga:pageviews,ga:exitRate,ga:avgTimeOnPage',
+          'start-date': dateRange3['start-date'],
+          'end-date': dateRange3['end-date']
+        },
+        chart: {
+          type: 'TABLE',
+          container: 'data-chart-page-views-container',
+          options: {
+            page: 'enable',
+            pageSize: '10',
+            pagingButtons: '10',
+            sortAscending: false,
+            sortColumn: 2
           }
-        });
+        }
+      });
 
-        var pageViews = new gapi.analytics.googleCharts.DataChart({
-          reportType: 'ga',
-          query: {
-            'dimensions': 'ga:pagePath,ga:pageTitle',
-            'metrics': 'ga:pageviews,ga:exitRate,ga:avgTimeOnPage',
-            'start-date': dateRange3['start-date'],
-            'end-date': dateRange3['end-date']
-          },
-          chart: {
-            type: 'TABLE',
-            container: 'data-chart-page-views-container',
-            options: {
-              page: 'enable',
-              pageSize: '10',
-              pagingButtons: '10',
-              sortAscending: false,
-              sortColumn: 2
+      var usersTable = new gapi.analytics.googleCharts.DataChart({
+        reportType: 'ga',
+        query: {
+          'dimensions': 'ga:country',
+          'metrics': 'ga:users',
+          'start-date': dateRange2['start-date'],
+          'end-date': dateRange2['end-date']
+        },
+        chart: {
+          type: 'TABLE',
+          container: 'data-chart-users-table-container',
+          options: {
+            page: 'enable',
+            pageSize: '5',
+            pagingButtons: '10',
+            sortAscending: false,
+            sortColumn: 1,
+            width: '420px'
+          }
+        }
+      });
+
+      var users = new gapi.analytics.googleCharts.DataChart({
+        reportType: 'ga',
+        query: {
+          'dimensions': 'ga:country',
+          'metrics': 'ga:users',
+          'start-date': dateRange2['start-date'],
+          'end-date': dateRange2['end-date']
+        },
+        chart: {
+          type: 'GEO',
+          container: 'data-chart-users-container',
+          options: {
+            displayMode: 'auto',
+            colorAxis: {
+              colors: ['green', 'blue']
+            },
+            magnifyingGlass: {
+              enable: true,
+              zoomFactor: 7.5
             }
           }
-        });
+        }
+      });
 
-        var usersTable = new gapi.analytics.googleCharts.DataChart({
-          reportType: 'ga',
-          query: {
-            'dimensions': 'ga:country',
-            'metrics': 'ga:users',
-            'start-date': dateRange2['start-date'],
-            'end-date': dateRange2['end-date']
-          },
-          chart: {
-            type: 'TABLE',
-            container: 'data-chart-users-table-container',
-            options: {
-              page: 'enable',
-              pageSize: '5',
-              pagingButtons: '10',
-              sortAscending: false,
-              sortColumn: 1,
-              width: '420px'
-            }
-          }
-        });
-
-        var users = new gapi.analytics.googleCharts.DataChart({
-          reportType: 'ga',
-          query: {
-            'dimensions': 'ga:country',
-            'metrics': 'ga:users',
-            'start-date': dateRange2['start-date'],
-            'end-date': dateRange2['end-date']
-          },
-          chart: {
-            type: 'GEO',
-            container: 'data-chart-users-container',
-            options: {
-              displayMode: 'auto',
-              colorAxis: {
-                colors: ['green', 'blue']
-              },
-              magnifyingGlass: {
-                enable: true,
-                zoomFactor: 7.5
-              }
-            }
-          }
-        });
-
-        gapi.analytics.auth.on('success', function (response) {
-          // viewSelector.execute();
-          // $('#view-selector').show();
-          $('#section1').show();
-          $('#section2').show();
+      gapi.analytics.auth.on('success', function (response) {
+        // viewSelector.execute();
+        // $('#view-selector').show();
+        if (!!VIEW_ID) {
           var newIds = {
             query: {
               ids: 'ga:' + VIEW_ID
@@ -238,46 +275,93 @@
           pageViews.set(newIds).execute();
           users.set(newIds).execute();
           usersTable.set(newIds).execute();
-        });
+          $('#section1').show();
+          $('#section2').show();
+        } else {
+          $('#view-id-input').show();
+        }
+      });
 
-        // viewSelector.on('change', function (ids) {
-        //   var newIds = {
-        //     query: {
-        //       ids: ids
-        //     }
-        //   }
-        //   $('#section1').show();
-        //   $('#section2').show();
-        //   sessions.set(newIds).execute();
-        //   pageViews.set(newIds).execute();
-        //   users.set(newIds).execute();
-        //   usersTable.set(newIds).execute();
-        // });
+      sessions.on('error', function (response) {
+        $('#section1').hide();
+        $('#section2').hide();
+        if (response.error.code) {
+          var html = '<div class="alert alert-danger alert-dismissible">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+            'Your Google Account does not have access to the property with View ID: ' + VIEW_ID +
+            '</div>';
+          $('#error').html(html);
+        }
+      });
 
-        sessionsSelector.on('change', function (data) {
-          sessions.set({
-            query: data
-          }).execute();
-        });
-        pageViewsSelector.on('change', function (data) {
-          pageViews.set({
-            query: data
-          }).execute();
-        });
-        usersSelector.on('change', function (data) {
-          users.set({
-            query: data
-          }).execute();
-          usersTable.set({
-            query: data
-          }).execute();
-        });
-      } else {
-        var html = '<div class="alert alert-danger alert-dismissible">' +
-          '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
-          'Please Add View ID in "google-analytics-view-id" object in your bucket!</div>';
-        $('#error').html(html);
-      }
+      users.on('error', function (response) {
+        $('#section1').hide();
+        $('#section2').hide();
+        if (response.error.code) {
+          var html = '<div class="alert alert-danger alert-dismissible">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+            'Your Google Account does not have access to the property with View ID: ' + VIEW_ID +
+            '</div>';
+          $('#error').html(html);
+        }
+      });
+
+      pageViews.on('error', function (response) {
+        $('#section1').hide();
+        $('#section2').hide();
+        if (response.error.code) {
+          var html = '<div class="alert alert-danger alert-dismissible">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+            'Your Google Account does not have access to the property with View ID: ' + VIEW_ID +
+            '</div>';
+          $('#error').html(html);
+        }
+      });
+
+      usersTable.on('error', function (response) {
+        $('#section1').hide();
+        $('#section2').hide();
+        if (response.error.code) {
+          var html = '<div class="alert alert-danger alert-dismissible">' +
+            '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+            'Your Google Account does not have access to the property with View ID: ' + VIEW_ID +
+            '</div>';
+          $('#error').html(html);
+        }
+      });
+
+      // viewSelector.on('change', function (ids) {
+      //   var newIds = {
+      //     query: {
+      //       ids: ids
+      //     }
+      //   }
+      //   $('#section1').show();
+      //   $('#section2').show();
+      //   sessions.set(newIds).execute();
+      //   pageViews.set(newIds).execute();
+      //   users.set(newIds).execute();
+      //   usersTable.set(newIds).execute();
+      // });
+
+      sessionsSelector.on('change', function (data) {
+        sessions.set({
+          query: data
+        }).execute();
+      });
+      pageViewsSelector.on('change', function (data) {
+        pageViews.set({
+          query: data
+        }).execute();
+      });
+      usersSelector.on('change', function (data) {
+        users.set({
+          query: data
+        }).execute();
+        usersTable.set({
+          query: data
+        }).execute();
+      });
     });
   });
 </script>
