@@ -1,0 +1,34 @@
+{
+  "title": "Analytics",
+  "font_awesome_class": "fa-bar-chart",
+  "image_url": "",
+  "source_code_url": "",
+  "objects": [{
+    "title": "Google Analytics View ID",
+    "slug": "google-analytics-view-id",
+    "content": "",
+	"type_slug": "analytics",
+    "metafields": [{
+      "value": "",
+      "key": "view_id",
+      "title": "View ID",
+      "type": "text"
+    }],
+    "status": "published"
+  }],
+  "object_types": [
+    {
+      "title": "Analytics",
+      "slug": "analytics",
+      "singular": "Analytic",
+      "metafields":[
+        {
+          "title": "View ID",
+          "key": "view_id",
+          "type": "text",
+          "value": ""
+        }
+      ]
+    }
+  ]
+}
