@@ -90,7 +90,7 @@ gapi.analytics.ready(function() {
      * first will be the start date and the second will be the end date.
      */
     template:
-      '  <div class="col-md-4">' +
+      '  <div class="col-md-6">' +
       '   <input type="text" class="form-control" name="datetimes" /> ' +
       '  </div>',
   });
