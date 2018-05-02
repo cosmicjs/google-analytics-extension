@@ -13,7 +13,7 @@
 <body>
   <div class="container-fluid">
     <div class="col-md-12">
-      <h1>Google Analytics Dashboard</h1>
+      <h1 class="pt-3">Google Analytics Dashboard</h1>
       <div class="row ml-2" id="auth-button"></div>
       <div id="view-id-input" style="display: none;">
         <div class="form-group">
@@ -27,19 +27,19 @@
     </div>
     <div id="section1" class="col-md-12" style="display: none;">
       <div class="row m-5 mx-auto">
-        <h4 class="col-md-12 text-info ml-5">Sessions</h4>
-        <div class="col-md-8 mx-auto" id="data-chart-sessions-container">
+        <h4 class="col-md-12 text-info">Sessions</h4>
+        <div class="col-md-8" id="data-chart-sessions-container">
         </div>
-        <div class="mx-auto mb-2 col-md-8" id="date-range-sessions-container">
+        <div class="mb-2 col-md-8" id="date-range-sessions-container">
         </div>
       </div>
       <div class="row m-5 mx-auto">
-        <h4 class="col-md-12 text-info ml-5">Users</h4>
-        <div class="col-md-8 mx-auto" id="data-chart-users-container">
+        <h4 class="col-md-12 text-info">Users</h4>
+        <div class="col-md-8" id="data-chart-users-container">
         </div>
-        <div class="mx-auto mb-2 col-md-8" id="date-range-users-container">
+        <div class="mb-2 col-md-8" id="date-range-users-container">
         </div>
-        <div class="col-md-8 mx-auto" id="data-chart-users-table-container">
+        <div class="col-md-8" id="data-chart-users-table-container">
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@
       <h4 class="m-3 col-md-10 text-info">Page Views</h4>
       <div class="col-md-12" id="date-range-page-views-container">
       </div>
-      <div class="col-md-12" id="data-chart-page-views-container">
+      <div class="col-md-12" id="data-chart-page-views-container" style="font-size: 14px;">
       </div>
     </div>
   </div>
@@ -132,7 +132,7 @@
       contentType: 'application/json',
       data: JSON.stringify(data),
       success: function (rooms) {
-        location.reload();        
+        location.reload();
       }
     })
   });
@@ -191,7 +191,10 @@
         },
         chart: {
           type: 'LINE',
-          container: 'data-chart-sessions-container'
+          container: 'data-chart-sessions-container',
+          options: {
+            width: '600'
+          }
         }
       });
 
@@ -233,7 +236,7 @@
             pagingButtons: '10',
             sortAscending: false,
             sortColumn: 1,
-            width: '420px'
+            width: '420'
           }
         }
       });
@@ -257,7 +260,8 @@
             magnifyingGlass: {
               enable: true,
               zoomFactor: 7.5
-            }
+            },
+            width: '500'
           }
         }
       });
