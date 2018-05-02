@@ -43,9 +43,9 @@ gapi.analytics.ready(function() {
 
       this.container.onchange = this.onChange.bind(this);
       $('input[name="datetimes"]').daterangepicker({
-        timePicker: true,
         startDate: moment().add(-30, 'days'),
         endDate: moment(new Date()),
+        maxDate: moment(new Date()),
         locale: {
           format: 'YYYY-MM-DD'
         }
@@ -91,6 +91,7 @@ gapi.analytics.ready(function() {
      */
     template:
       '  <div class="col-md-6">' +
+      '   <label>Select date range:</label>' +
       '   <input type="text" class="form-control" name="datetimes" /> ' +
       '  </div>',
   });
