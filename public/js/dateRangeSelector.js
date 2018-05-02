@@ -20,48 +20,6 @@
  * A DateRangeSelector component for the Embed API.
  */
 gapi.analytics.ready(function() {
-  let nDaysAgo = /(\d+)daysAgo/;
-  let dateFormat = /\d{4}\-\d{2}\-\d{2}/;
-
-  /**
-   * Convert a date acceptable to the Core Reporting API (e.g. `today`,
-   * `yesterday` or `NdaysAgo`) into the format YYYY-MM-DD. Dates
-   * already in that format are simply returned.
-   * @param {string} str The date string to format.
-   * @return {string} The formatted date.
-   */
-  function convertDate(str) {
-    // If str is in the proper format, do nothing.
-    if (dateFormat.test(str)) return str;
-
-    let match = nDaysAgo.exec(str);
-    if (match) {
-      return daysAgo(+match[1]);
-    } else if (str == 'today') {
-      return daysAgo(0);
-    } else if (str == 'yesterday') {
-      return daysAgo(1);
-    } else {
-      throw new Error('Cannot convert date ' + str);
-    }
-  }
-
-  /**
-   * Accept a number and return a date formatted as YYYY-MM-DD that
-   * represents that many days ago.
-   * @param {number} numDays The number of days ago whose date to return.
-   * @return {string} The formatted date.
-   */
-  function daysAgo(numDays) {
-    let date = new Date();
-    date.setDate(date.getDate() - numDays);
-    let month = String(date.getMonth() + 1);
-    month = month.length == 1 ? '0' + month: month;
-    let day = String(date.getDate());
-    day = day.length == 1 ? '0' + day: day;
-    return date.getFullYear() + '-' + month + '-' + day;
-  }
-
   gapi.analytics.createComponent('DateRangeSelector', {
 
     /**
@@ -81,17 +39,17 @@ gapi.analytics.ready(function() {
       if (options.template) this.template = options.template;
 
       this.container.innerHTML = this.template;
-      let dateInputs = this.container.querySelectorAll('input');
-
-      this.startDateInput = dateInputs[0];
-      this.startDateInput.value = convertDate(options['start-date']);
-      this.endDateInput = dateInputs[1];
-      this.endDateInput.value = convertDate(options['end-date']);
-
-      this.setValues();
-      this.setMinMax();
+      this.dateInputs = this.container.querySelectorAll('input');
 
       this.container.onchange = this.onChange.bind(this);
+      $('input[name="datetimes"]').daterangepicker({
+        timePicker: true,
+        startDate: moment().add(-30, 'days'),
+        endDate: moment(new Date()),
+        locale: {
+          format: 'YYYY-MM-DD'
+        }
+      });
       return this;
     },
 
@@ -100,11 +58,11 @@ gapi.analytics.ready(function() {
      * Pass an object containing the start date and end date.
      */
     onChange: function() {
+      var dates = this.dateInputs[0].value.split(' - ');
       this.setValues();
-      this.setMinMax();
       this.emit('change', {
-        'start-date': this['start-date'],
-        'end-date': this['end-date'],
+        'start-date': dates[0],
+        'end-date': dates[1],
       });
     },
 
@@ -112,16 +70,17 @@ gapi.analytics.ready(function() {
      * Updates the instance properties based on the input values.
      */
     setValues: function() {
-      this['start-date'] = this.startDateInput.value;
-      this['end-date'] = this.endDateInput.value;
+      var dates = this.dateInputs[0].value.split(' - ');
+      this['start-date'] = dates[0];
+      this['end-date'] = dates[1];
     },
 
     /**
      * Updates the input min and max attributes so there's no overlap.
      */
     setMinMax: function() {
-      this.startDateInput.max = this.endDateInput.value;
-      this.endDateInput.min = this.startDateInput.value;
+      // this.startDateInput.max = this.endDateInput.value;
+      // this.endDateInput.min = this.startDateInput.value;
     },
 
     /**
@@ -131,15 +90,8 @@ gapi.analytics.ready(function() {
      * first will be the start date and the second will be the end date.
      */
     template:
-      '<div class="DateRangeSelector" style="display: inline-flex;">' +
-      '  <div class="DateRangeSelector-item col-md-6">' +
-      '    <label>Start Date</label> ' +
-      '    <input class="form-control" type="date">' +
-      '  </div>' +
-      '  <div class="DateRangeSelector-item col-md-6">' +
-      '    <label>End Date</label> ' +
-      '    <input class="form-control" type="date">' +
-      '  </div>' +
-      '</div>',
+      '  <div class="col-md-4">' +
+      '   <input type="text" class="form-control" name="datetimes" /> ' +
+      '  </div>',
   });
 });
