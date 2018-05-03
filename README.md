@@ -4,8 +4,8 @@
 Add the Google Analytics View ID for your wesite in your [Cosmic JS](https://cosmicjs.com) Bucket.  [Read the blog article](https://cosmicjs.com/articles/google-analytics-extension-jgntlka0) to learn how it was built.
 ### Getting Started
 ```
-git clone https://github.com/WaqasArshad777/google-analytics-app.git
-cd google-analytics-app
+git clone https://github.com/cosmicjs/google-analytics-extension
+cd google-analytics-extension
 npm install
 npm run start
 ```
