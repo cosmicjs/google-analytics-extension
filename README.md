@@ -1,7 +1,7 @@
 # Google Analytics
 <img width="60%" src="https://cosmic-s3.imgix.net/9f020480-4e06-11e8-a93b-53f87b16357a-download.jpg" />
 
-Add the Google Analytics View ID for your wesite in your [Cosmic JS](https://cosmicjs.com) Bucket.  [Read the blog article](https://cosmicjs.com/articles/google-analytics-extension-jgntlka0) to learn how it was built.
+Cosmic JS Extension that adds Google Analytics insights for your website to your Cosmic JS Dashboard . Simply add the Google Analytics View ID for your wesite in your [Cosmic JS](https://cosmicjs.com) Bucket.  [Read the blog article](https://cosmicjs.com/articles/google-analytics-extension-jgntlka0) to learn how it was built.
 ### Getting Started
 ```
 git clone https://github.com/cosmicjs/google-analytics-extension
