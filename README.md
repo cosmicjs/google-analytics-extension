@@ -1,5 +1,5 @@
 # Google Analytics
-<img width="60%" src="https://cosmic-s3.imgix.net/f37543a0-4d49-11e8-86d8-d7fbaaaa60e5-geo.PNG" />
+<img width="60%" src="https://cosmic-s3.imgix.net/9f020480-4e06-11e8-a93b-53f87b16357a-download.jpg" />
 
 Add the Google Analytics View ID for your wesite in your [Cosmic JS](https://cosmicjs.com) Bucket.  [Read the blog article](https://cosmicjs.com/articles/google-analytics-extension-jgntlka0) to learn how it was built.
 ### Getting Started
