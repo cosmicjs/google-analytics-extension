@@ -102,6 +102,7 @@
       if (!url) {
         url = window.location.href;
       }
+      console.log(name, url)
       name = name.replace(/[[\]]/g, "\\$&");
       var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
@@ -116,6 +117,7 @@
       read_key: getParameterByName('read_key'),
       write_key: getParameterByName('write_key')
     };
+    console.log(config)
 
     $('#view-id-button').on('click', function () {
       var id = $('#view-id').val();
