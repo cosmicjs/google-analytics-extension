@@ -2,7 +2,7 @@
   "title": "Analytics",
   "font_awesome_class": "fa-bar-chart",
   "image_url": "https://cosmic-s3.imgix.net/06868c00-4d55-11e8-b064-e5baad7ec20c-ga.png",
-  "source_code_url": "",
+  "source_code_url": "https://github.com/cosmicjs/google-analytics-extension",
   "objects": [{
     "title": "Google Analytics View ID",
     "slug": "google-analytics-view-id",
