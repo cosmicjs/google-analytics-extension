@@ -1,5 +1,5 @@
 {
-  "name": "googel-analytics",
+  "name": "google-analytics",
   "version": "1.0.0",
   "description": "Google Analytics App",
   "main": "app.js",

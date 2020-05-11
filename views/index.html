@@ -144,7 +144,7 @@
     })
   });
 
-  $.get("https://api.cosmicjs.com/v1/" + config.slug + '/object/google-analytics-view-id', function (data, status) {
+  $.get("https://api.cosmicjs.com/v1/" + config.slug + '/object/google-analytics-view-id?read_key=' + config.read_key, function (data, status) {
     var VIEW_ID = data.object.metadata.view_id;
     gapi.analytics.ready(function () {
       var CLIENT_ID = "915218045307-pk93tn8rpu0fnciocqnbd4rv1qstkuf7.apps.googleusercontent.com";
